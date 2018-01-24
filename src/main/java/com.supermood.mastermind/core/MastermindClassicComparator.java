@@ -1,5 +1,8 @@
 package com.supermood.mastermind.core;
 
+import com.supermood.mastermind.constant.Pawn;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -18,18 +21,20 @@ public class MastermindClassicComparator implements MastermindComparator {
     }
     final RoundResult result = new RoundResult(original.getCombinationLength());
     final AtomicInteger index = new AtomicInteger(0);
-    provided.getCombinationSuite().removeIf(pawn -> {
+    final List<Pawn> providedCopy = new ArrayList<>(provided.getCombinationSuite());
+    final List<Pawn> originalCopy = new ArrayList<>(original.getCombinationSuite());
+    providedCopy.removeIf(pawn -> {
       boolean found = false;
-      if (pawn == original.getCombinationSuite().get(index.get())) {
+      if (pawn == originalCopy.get(index.get())) {
         result.incrementCorrectPosition();
-        original.getCombinationSuite().remove(index.get());
+        originalCopy.remove(index.get());
         index.getAndDecrement();
         found = true;
       }
       index.getAndIncrement();
       return found;
     });
-    provided.getCombinationSuite().removeIf(pawn -> original.getCombinationSuite().removeIf(pawn1 -> {
+    providedCopy.removeIf(pawn -> originalCopy.removeIf(pawn1 -> {
       boolean found = false;
       if (pawn == pawn1) {
         found = true;
