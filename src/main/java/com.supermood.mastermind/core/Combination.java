@@ -1,6 +1,7 @@
 package com.supermood.mastermind.core;
 
 import com.supermood.mastermind.constant.Pawn;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -47,7 +48,7 @@ public class Combination {
       throw new IllegalArgumentException(String.format("No pawns combination was found."));
     }
     combinationLength = length;
-    combinationSuite = Arrays.asList(pawns);
+    combinationSuite = new ArrayList<>(Arrays.asList(pawns));
   }
 
   /**

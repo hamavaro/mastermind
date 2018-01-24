@@ -16,16 +16,27 @@ public class MastermindClassicComparator implements MastermindComparator {
     if (provided.getCombinationLength() != original.getCombinationLength()) {
       throw new IllegalArgumentException("Combinations with different lengths cannot be compared.");
     }
-    RoundResult result = new RoundResult(original.getCombinationLength());
+    final RoundResult result = new RoundResult(original.getCombinationLength());
     final AtomicInteger index = new AtomicInteger(0);
-    provided.getCombinationSuite().stream().forEachOrdered(pawn -> {
+    provided.getCombinationSuite().removeIf(pawn -> {
+      boolean found = false;
       if (pawn == original.getCombinationSuite().get(index.get())) {
         result.incrementCorrectPosition();
-      } else if (original.getCombinationSuite().contains(pawn)) {
-        result.incrementCorrectColor();
+        original.getCombinationSuite().remove(index.get());
+        index.getAndDecrement();
+        found = true;
       }
       index.getAndIncrement();
+      return found;
     });
+    provided.getCombinationSuite().removeIf(pawn -> original.getCombinationSuite().removeIf(pawn1 -> {
+      boolean found = false;
+      if (pawn == pawn1) {
+        found = true;
+        result.incrementCorrectColor();
+      }
+      return found;
+    }));
     return result;
   }
 }
